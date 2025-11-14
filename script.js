@@ -172,3 +172,92 @@ function changeProfilePhoto() {
 
 // Change photo every 4 seconds
 setInterval(changeProfilePhoto, 4000);
+
+// Typing Code Animation for Hero Background
+const codeLines = [
+    'const developer = { name: "Nitin", role: "Solutions Consultant" };',
+    'function innovate() {',
+    '  return "Transform Ideas into Reality";',
+    '}',
+    '',
+    'class TechLeader extends Professional {',
+    '  async solve(problem) {',
+    '    const solution = await this.analyze(problem);',
+    '    return this.implement(solution);',
+    '  }',
+    '}',
+    '',
+    'import { AI, Cloud, Analytics } from "expertise";',
+    'export default Innovation;',
+    '',
+    'if (challenge) {',
+    '  const result = await overcome(challenge);',
+    '}',
+    '',
+    '<Component>Success</Component>',
+    '{ skills: ["AI", "BI", "Cloud"] }',
+    'let vision = "Digital Transformation";',
+    '',
+    '// Building Solutions',
+    '/* Innovation in Code */',
+    '=> { ideas }',
+    '  .map(transform)',
+    '  .filter(validate)',
+    '  .reduce(deliver)',
+    '',
+    'SELECT * FROM expertise WHERE impact > 0;',
+    'console.log("Driving Change");',
+    '',
+    'try { innovate(); }',
+    'catch { adapt(); }',
+    '',
+    'async function breakthrough() {',
+    '  await nextLevel();',
+    '}'
+];
+
+let currentLineIndex = 0;
+let currentCharIndex = 0;
+let typedContent = '';
+
+function typeCode() {
+    if (currentLineIndex < codeLines.length) {
+        const currentLine = codeLines[currentLineIndex];
+        
+        if (currentCharIndex < currentLine.length) {
+            typedContent += currentLine.charAt(currentCharIndex);
+            currentCharIndex++;
+            
+            // Update the hero::before content
+            const hero = document.querySelector('.hero');
+            if (hero) {
+                hero.style.setProperty('--typed-code', `"${typedContent.replace(/"/g, '\\"')}"`);
+            }
+            
+            // Random typing speed between 30-80ms
+            setTimeout(typeCode, Math.random() * 50 + 30);
+        } else {
+            // Move to next line
+            typedContent += '\n';
+            currentLineIndex++;
+            currentCharIndex = 0;
+            
+            // Small pause between lines
+            setTimeout(typeCode, 200);
+        }
+    } else {
+        // Reset and start over after a pause
+        setTimeout(() => {
+            currentLineIndex = 0;
+            currentCharIndex = 0;
+            typedContent = '';
+            typeCode();
+        }, 3000);
+    }
+}
+
+// Start typing animation when page loads
+window.addEventListener('load', () => {
+    setTimeout(typeCode, 1000);
+});
+

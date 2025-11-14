@@ -151,12 +151,121 @@ html {
     display: flex;
     align-items: center;
     padding-top: 80px;
-    background: linear-gradient(135deg, #1e293b 0%, #0f172a 50%, #1e3a5f 100%);
+    background: #0f172a;
     position: relative;
+    overflow: hidden;
+}
+
+.hero::before {
+    content: 'const developer = {\A  name: "Nitin Pandit",\A  role: "Solutions Consultant",\A  passion: "Innovation"\A};\A\Afunction transform(ideas) {\A  return ideas.map(analyze)\A    .filter(validate)\A    .reduce(implement);\A}\A\Aclass TechLeader {\A  async solve(problem) {\A    const solution = await this.analyze(problem);\A    return this.implement(solution);\A  }\A}\A\Aimport { AI, Cloud, Analytics } from "expertise";\Aexport default Innovation;\A\Aif (challenge) {\A  const result = await overcome(challenge);\A  console.log("Success achieved!");\A}\A\Alet vision = "Digital Transformation";\Aconst impact = skills.reduce((a, b) => a + b.value);\A\A// Building the future, one solution at a time';
+    position: absolute;
+    top: 8%;
+    left: 5%;
+    max-width: 90%;
+    height: auto;
+    max-height: 0;
+    color: rgba(59, 130, 246, 0.25);
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    line-height: 1.8;
+    white-space: pre;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 0;
+    text-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+    animation: typingLines 20s steps(1, end) infinite;
+}
+
+.hero::after {
+    content: '█';
+    position: absolute;
+    top: 8%;
+    left: 5%;
+    color: rgba(59, 130, 246, 0.7);
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    line-height: 1.8;
+    pointer-events: none;
+    z-index: 1;
+    animation: blinkCursor 0.7s infinite, moveCursorLines 20s steps(1, end) infinite;
+}
+
+@keyframes typingLines {
+    0% { max-height: 0; }
+    4% { max-height: 1.8em; }
+    8% { max-height: 3.6em; }
+    12% { max-height: 5.4em; }
+    16% { max-height: 7.2em; }
+    20% { max-height: 9em; }
+    24% { max-height: 10.8em; }
+    28% { max-height: 12.6em; }
+    32% { max-height: 14.4em; }
+    36% { max-height: 16.2em; }
+    40% { max-height: 18em; }
+    44% { max-height: 19.8em; }
+    48% { max-height: 21.6em; }
+    52% { max-height: 23.4em; }
+    56% { max-height: 25.2em; }
+    60% { max-height: 27em; }
+    64% { max-height: 28.8em; }
+    68% { max-height: 30.6em; }
+    72% { max-height: 32.4em; }
+    76% { max-height: 34.2em; }
+    80% { max-height: 36em; }
+    84% { max-height: 37.8em; }
+    88% { max-height: 39.6em; }
+    90%, 95% { max-height: 41.4em; }
+    96%, 100% { max-height: 0; opacity: 0; }
+}
+
+@keyframes moveCursorLines {
+    0% { transform: translate(0, 0); }
+    4% { transform: translate(0, 1.8em); }
+    8% { transform: translate(0, 3.6em); }
+    12% { transform: translate(0, 5.4em); }
+    16% { transform: translate(0, 7.2em); }
+    20% { transform: translate(0, 9em); }
+    24% { transform: translate(0, 10.8em); }
+    28% { transform: translate(0, 12.6em); }
+    32% { transform: translate(0, 14.4em); }
+    36% { transform: translate(0, 16.2em); }
+    40% { transform: translate(0, 18em); }
+    44% { transform: translate(0, 19.8em); }
+    48% { transform: translate(0, 21.6em); }
+    52% { transform: translate(0, 23.4em); }
+    56% { transform: translate(0, 25.2em); }
+    60% { transform: translate(0, 27em); }
+    64% { transform: translate(0, 28.8em); }
+    68% { transform: translate(0, 30.6em); }
+    72% { transform: translate(0, 32.4em); }
+    76% { transform: translate(0, 34.2em); }
+    80% { transform: translate(0, 36em); }
+    84% { transform: translate(0, 37.8em); }
+    88% { transform: translate(0, 39.6em); }
+    90%, 95% { transform: translate(0, 41.4em); }
+    96%, 100% { transform: translate(0, 0); opacity: 0; }
+}
+
+@keyframes blinkCursor {
+    0%, 49% {
+        opacity: 1;
+    }
+    50%, 100% {
+        opacity: 0;
+    }
 }
 
 [data-theme="light"] .hero {
-    background: linear-gradient(135deg, #f9fafb 0%, #e0e7ff 50%, #dbeafe 100%);
+    background: #f8fafc;
+}
+
+[data-theme="light"] .hero::before {
+    color: rgba(37, 99, 235, 0.2);
+    text-shadow: 0 0 10px rgba(37, 99, 235, 0.2);
+}
+
+[data-theme="light"] .hero::after {
+    color: rgba(37, 99, 235, 0.5);
 }
 
 .hero-content {
@@ -165,6 +274,8 @@ html {
     gap: 4rem;
     align-items: center;
     padding: 4rem 0;
+    position: relative;
+    z-index: 1;
 }
 
 .hero-title {
@@ -274,14 +385,14 @@ html {
 }
 
 .image-container {
-    width: 350px;
-    height: 350px;
-    border-radius: 50%;
+    width: 480px;
+    height: 480px;
+    border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
     overflow: hidden;
     border: 8px solid var(--bg-white);
     box-shadow: var(--shadow-lg);
     position: relative;
-    animation: float 3s ease-in-out infinite;
+    animation: float 3s ease-in-out infinite, morph 8s ease-in-out infinite;
 }
 
 @keyframes float {
@@ -290,6 +401,21 @@ html {
     }
     50% {
         transform: translateY(-20px);
+    }
+}
+
+@keyframes morph {
+    0%, 100% {
+        border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+    }
+    25% {
+        border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%;
+    }
+    50% {
+        border-radius: 50% 60% 30% 60% / 30% 60% 70% 40%;
+    }
+    75% {
+        border-radius: 60% 30% 60% 40% / 70% 40% 50% 60%;
     }
 }
 
@@ -1016,8 +1142,8 @@ section {
     }
 
     .image-container {
-        width: 250px;
-        height: 250px;
+        width: 340px;
+        height: 340px;
     }
 
     .hero-title {
