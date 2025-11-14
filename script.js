@@ -324,32 +324,100 @@ async function fetchLatestArticles() {
     const articlesGrid = document.getElementById('articlesGrid');
     const rssUrl = 'https://www.c-sharpcorner.com/members/nitin-pandit/rss';
     
+    // Determine article count based on screen size
+    const isMobile = window.innerWidth <= 768;
+    const articleCount = isMobile ? 6 : 9;
+    
     try {
-        // Using a CORS proxy to fetch RSS feed
-        const proxyUrl = 'https://api.allorigins.win/raw?url=';
-        const response = await fetch(proxyUrl + encodeURIComponent(rssUrl));
-        const text = await response.text();
+        // Try multiple CORS proxies for better reliability
+        const proxies = [
+            `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`,
+            `https://api.allorigins.win/get?url=${encodeURIComponent(rssUrl)}`,
+            `https://corsproxy.io/?${encodeURIComponent(rssUrl)}`
+        ];
         
-        // Parse XML
-        const parser = new DOMParser();
-        const xml = parser.parseFromString(text, 'text/xml');
-        const items = xml.querySelectorAll('item');
+        let data = null;
+        let isRss2Json = false;
+        
+        // Try first proxy (RSS2JSON)
+        try {
+            const response = await fetch(proxies[0]);
+            const jsonData = await response.json();
+            if (jsonData.status === 'ok' && jsonData.items) {
+                data = jsonData.items.slice(0, articleCount);
+                isRss2Json = true;
+            }
+        } catch (e) {
+            console.log('RSS2JSON failed, trying alternative...');
+        }
+        
+        // If first proxy failed, try allorigins
+        if (!data) {
+            try {
+                const response = await fetch(proxies[1]);
+                const jsonData = await response.json();
+                const parser = new DOMParser();
+                const xml = parser.parseFromString(jsonData.contents, 'text/xml');
+                const items = xml.querySelectorAll('item');
+                
+                if (items.length > 0) {
+                    data = Array.from(items).slice(0, articleCount);
+                    isRss2Json = false;
+                }
+            } catch (e) {
+                console.log('AllOrigins failed, trying corsproxy...');
+            }
+        }
+        
+        // If both failed, try corsproxy
+        if (!data) {
+            const response = await fetch(proxies[2]);
+            const text = await response.text();
+            const parser = new DOMParser();
+            const xml = parser.parseFromString(text, 'text/xml');
+            const items = xml.querySelectorAll('item');
+            
+            if (items.length > 0) {
+                data = Array.from(items).slice(0, articleCount);
+                isRss2Json = false;
+            }
+        }
+        
+        if (!data || data.length === 0) {
+            throw new Error('No articles found');
+        }
         
         // Clear loading message
         articlesGrid.innerHTML = '';
         
-        // Get first 6 articles
-        const articleCount = Math.min(items.length, 6);
-        
-        for (let i = 0; i < articleCount; i++) {
-            const item = items[i];
-            const title = item.querySelector('title').textContent;
-            const description = item.querySelector('description').textContent;
-            const link = item.querySelector('link').textContent;
-            const pubDate = item.querySelector('pubDate').textContent;
-            const author = item.querySelector('author').textContent;
+        // Process articles based on format
+        data.forEach(item => {
+            let title, description, link, pubDate;
             
-            // Format the link - ensure it's absolute
+            if (isRss2Json) {
+                // RSS2JSON format
+                title = item.title;
+                description = item.description.replace(/<[^>]*>/g, '').substring(0, 200) + '...';
+                link = item.link;
+                pubDate = new Date(item.pubDate).toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'short', 
+                    day: 'numeric' 
+                });
+            } else {
+                // XML format
+                title = item.querySelector('title').textContent;
+                description = item.querySelector('description').textContent.replace(/<[^>]*>/g, '').substring(0, 200) + '...';
+                link = item.querySelector('link').textContent;
+                const dateText = item.querySelector('pubDate').textContent;
+                pubDate = new Date(dateText).toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'short', 
+                    day: 'numeric' 
+                });
+            }
+            
+            // Ensure link is absolute
             const articleUrl = link.startsWith('http') ? link : `https://www.c-sharpcorner.com${link}`;
             
             // Create article card
@@ -365,7 +433,7 @@ async function fetchLatestArticles() {
                         <span class="article-date">
                             <i class="fas fa-calendar-alt"></i> ${pubDate}
                         </span>
-                        <a href="${articleUrl}" target="_blank" class="article-link">
+                        <a href="${articleUrl}" target="_blank" rel="noopener noreferrer" class="article-link">
                             Read More <i class="fas fa-arrow-right"></i>
                         </a>
                     </div>
@@ -373,14 +441,14 @@ async function fetchLatestArticles() {
             `;
             
             articlesGrid.appendChild(articleCard);
-        }
+        });
         
     } catch (error) {
         console.error('Error fetching articles:', error);
         articlesGrid.innerHTML = `
             <div class="article-loading">
                 <i class="fas fa-exclamation-circle"></i>
-                <p>Unable to load articles at this time. Please visit <a href="https://www.c-sharpcorner.com/members/nitin-pandit/articles" target="_blank">my C# Corner profile</a> to see all articles.</p>
+                <p>Unable to load articles at this time. Please visit <a href="https://www.c-sharpcorner.com/members/nitin-pandit/articles" target="_blank" style="color: var(--primary-color); text-decoration: underline;">my C# Corner profile</a> to see all articles.</p>
             </div>
         `;
     }
