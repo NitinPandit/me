@@ -261,3 +261,60 @@ window.addEventListener('load', () => {
     setTimeout(typeCode, 1000);
 });
 
+// MVP Badge Celebration Effect
+const mvpBadges = document.querySelectorAll('.mvp-badge');
+
+mvpBadges.forEach(badge => {
+    badge.addEventListener('mouseenter', function(e) {
+        createConfetti(this);
+    });
+});
+
+function createConfetti(badge) {
+    const confettiSymbols = ['🎉', '🎊', '✨', '⭐', '🌟', '💫', '🏆', '👏'];
+    const colors = ['#3B82F6', '#8B5CF6', '#EC4899', '#F59E0B', '#10B981'];
+    
+    // Create 12 confetti particles
+    for (let i = 0; i < 12; i++) {
+        const confetti = document.createElement('span');
+        confetti.textContent = confettiSymbols[Math.floor(Math.random() * confettiSymbols.length)];
+        confetti.style.position = 'absolute';
+        confetti.style.fontSize = Math.random() * 20 + 15 + 'px';
+        confetti.style.pointerEvents = 'none';
+        confetti.style.zIndex = '1000';
+        confetti.style.left = '50%';
+        confetti.style.top = '50%';
+        
+        const angle = (Math.PI * 2 * i) / 12;
+        const velocity = 80 + Math.random() * 40;
+        const tx = Math.cos(angle) * velocity;
+        const ty = Math.sin(angle) * velocity - 30;
+        const rotation = Math.random() * 360;
+        
+        confetti.style.animation = `confettiFly${i} 1s ease-out forwards`;
+        
+        // Add keyframes dynamically
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes confettiFly${i} {
+                0% {
+                    opacity: 1;
+                    transform: translate(-50%, -50%) translate(0, 0) rotate(0deg) scale(0.3);
+                }
+                100% {
+                    opacity: 0;
+                    transform: translate(-50%, -50%) translate(${tx}px, ${ty}px) rotate(${rotation}deg) scale(1);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+        
+        badge.appendChild(confetti);
+        
+        // Remove confetti after animation
+        setTimeout(() => {
+            confetti.remove();
+            style.remove();
+        }, 1000);
+    }
+}

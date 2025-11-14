@@ -378,6 +378,104 @@ html {
     transform: translateY(-3px);
 }
 
+.mvp-badges {
+    display: flex;
+    gap: 1.5rem;
+    margin-top: 2rem;
+    align-items: center;
+}
+
+.mvp-badge {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    position: relative;
+    text-decoration: none;
+    cursor: pointer;
+    overflow: visible;
+}
+
+.mvp-badge::before {
+    content: '🎉';
+    position: absolute;
+    font-size: 1.5rem;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.mvp-badge::after {
+    content: '✨';
+    position: absolute;
+    font-size: 1.2rem;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.mvp-badge:hover::before {
+    animation: celebrate1 1s ease-out;
+}
+
+.mvp-badge:hover::after {
+    animation: celebrate2 1s ease-out 0.1s;
+}
+
+@keyframes celebrate1 {
+    0% {
+        opacity: 1;
+        transform: translate(0, 0) scale(0.5) rotate(0deg);
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-50px, -60px) scale(1.5) rotate(-180deg);
+    }
+}
+
+@keyframes celebrate2 {
+    0% {
+        opacity: 1;
+        transform: translate(0, 0) scale(0.5) rotate(0deg);
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+        transform: translate(50px, -60px) scale(1.5) rotate(180deg);
+    }
+}
+
+.mvp-badge img {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    transition: var(--transition);
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+}
+
+.mvp-badge:hover img {
+    transform: scale(1.1) translateY(-5px);
+    filter: drop-shadow(0 8px 12px rgba(59, 130, 246, 0.3));
+}
+
+.mvp-years {
+    font-size: 0.75rem;
+    color: var(--primary-color);
+    font-weight: 600;
+    background: rgba(59, 130, 246, 0.1);
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    white-space: nowrap;
+}
+
+[data-theme="light"] .mvp-years {
+    background: rgba(37, 99, 235, 0.1);
+    color: var(--primary-color);
+}
+
 .hero-image {
     display: flex;
     justify-content: center;
@@ -1161,6 +1259,20 @@ section {
 
     .social-links {
         justify-content: center;
+    }
+
+    .mvp-badges {
+        justify-content: center;
+        margin-top: 1.5rem;
+    }
+
+    .mvp-badge img {
+        width: 70px;
+        height: 70px;
+    }
+
+    .mvp-years {
+        font-size: 0.7rem;
     }
 
     .contact-content-center {
