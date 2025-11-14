@@ -318,3 +318,95 @@ function createConfetti(badge) {
         }, 1000);
     }
 }
+
+// Fetch and Display Latest Articles from RSS Feed
+async function fetchLatestArticles() {
+    const articlesGrid = document.getElementById('articlesGrid');
+    const rssUrl = 'https://www.c-sharpcorner.com/members/nitin-pandit/rss';
+    
+    try {
+        // Using a CORS proxy to fetch RSS feed
+        const proxyUrl = 'https://api.allorigins.win/raw?url=';
+        const response = await fetch(proxyUrl + encodeURIComponent(rssUrl));
+        const text = await response.text();
+        
+        // Parse XML
+        const parser = new DOMParser();
+        const xml = parser.parseFromString(text, 'text/xml');
+        const items = xml.querySelectorAll('item');
+        
+        // Clear loading message
+        articlesGrid.innerHTML = '';
+        
+        // Get first 6 articles
+        const articleCount = Math.min(items.length, 6);
+        
+        for (let i = 0; i < articleCount; i++) {
+            const item = items[i];
+            const title = item.querySelector('title').textContent;
+            const description = item.querySelector('description').textContent;
+            const link = item.querySelector('link').textContent;
+            const pubDate = item.querySelector('pubDate').textContent;
+            const author = item.querySelector('author').textContent;
+            
+            // Format the link - ensure it's absolute
+            const articleUrl = link.startsWith('http') ? link : `https://www.c-sharpcorner.com${link}`;
+            
+            // Create article card
+            const articleCard = document.createElement('div');
+            articleCard.className = 'article-card';
+            articleCard.innerHTML = `
+                <div class="article-header">
+                    <h3 class="article-title">${title}</h3>
+                </div>
+                <div class="article-body">
+                    <p class="article-description">${description}</p>
+                    <div class="article-footer">
+                        <span class="article-date">
+                            <i class="fas fa-calendar-alt"></i> ${pubDate}
+                        </span>
+                        <a href="${articleUrl}" target="_blank" class="article-link">
+                            Read More <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            `;
+            
+            articlesGrid.appendChild(articleCard);
+        }
+        
+    } catch (error) {
+        console.error('Error fetching articles:', error);
+        articlesGrid.innerHTML = `
+            <div class="article-loading">
+                <i class="fas fa-exclamation-circle"></i>
+                <p>Unable to load articles at this time. Please visit <a href="https://www.c-sharpcorner.com/members/nitin-pandit/articles" target="_blank">my C# Corner profile</a> to see all articles.</p>
+            </div>
+        `;
+    }
+}
+
+// Load articles when page loads
+window.addEventListener('load', () => {
+    fetchLatestArticles();
+});
+
+// Scroll to Top Button
+const scrollToTopBtn = document.getElementById('scrollToTop');
+
+// Show/hide scroll to top button
+window.addEventListener('scroll', () => {
+    if (window.pageYOffset > 300) {
+        scrollToTopBtn.classList.add('visible');
+    } else {
+        scrollToTopBtn.classList.remove('visible');
+    }
+});
+
+// Scroll to top when button is clicked
+scrollToTopBtn.addEventListener('click', () => {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+});
